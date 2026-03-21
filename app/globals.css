@@ -1,26 +1,62 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #333 #111;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #000000;
+  color: #ededed;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
+
+/* Code editor styles */
+.code-editor {
+  font-family: var(--font-mono), "Fira Code", "Cascadia Code", monospace;
+  tab-size: 2;
+  line-height: 1.6;
+}
+
+.code-editor:focus {
+  outline: none;
+}
+
+/* Custom scrollbar for code areas */
+.code-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.code-scroll::-webkit-scrollbar-track {
+  background: #111;
+}
+.code-scroll::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #fff 0%, #dc2626 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow effect */
+.glow-red {
+  box-shadow: 0 0 40px rgba(220, 38, 38, 0.3), 0 0 80px rgba(220, 38, 38, 0.1);
+}
+
+/* Difficulty badges */
+.badge-warmup { background: #1e3a2f; color: #4ade80; }
+.badge-core { background: #1e293b; color: #60a5fa; }
+.badge-challenge { background: #3b1e1e; color: #f87171; }
+.badge-real-world { background: #362e1e; color: #fbbf24; }
+
+/* System Design difficulty badges */
+.badge-beginner { background: #1e3a2f; color: #4ade80; }
+.badge-intermediate { background: #1e293b; color: #60a5fa; }
+.badge-advanced { background: #3b1e1e; color: #f87171; }
