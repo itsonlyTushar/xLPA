@@ -171,7 +171,7 @@ const ProblemContent = ({ problem, nextProblem, prevProblem, chapter, dc, starte
             <div>
               <h3 className="text-[10px] font-bold uppercase tracking-widest mb-4 text-foreground/70">Examples</h3>
               <div className="space-y-4">
-                {problem.examples.map((ex, i) => (
+                {problem.examples.map((ex: any, i: number) => (
                   <div
                     key={i}
                     className="bg-[#000] border border-white/5 rounded-2xl p-5 shadow-xl"
@@ -201,7 +201,7 @@ const ProblemContent = ({ problem, nextProblem, prevProblem, chapter, dc, starte
             <div>
               <h3 className="text-[10px] font-bold uppercase tracking-widest mb-3 text-foreground/70">Constraints</h3>
               <ul className="text-sm text-muted/60 space-y-2 font-mono">
-                {problem.constraints.map((c, i) => (
+                {problem.constraints.map((c: any, i: number) => (
                   <li key={i} className="flex items-start gap-3 bg-white/5 p-2 rounded-lg border border-white/5 shadow-inner">
                     <span className="text-primary font-bold">·</span>
                     <span className="text-xs">{c}</span>
@@ -212,7 +212,7 @@ const ProblemContent = ({ problem, nextProblem, prevProblem, chapter, dc, starte
 
             {/* Tags */}
             <div className="flex items-center gap-2 flex-wrap pt-2">
-              {problem.tags.map((tag) => (
+              {problem.tags.map((tag: any) => (
                 <span
                   key={tag}
                   className="text-[10px] bg-white/5 border border-white/10 px-3 py-1 rounded-full text-muted/60 uppercase font-bold tracking-widest"
@@ -234,7 +234,7 @@ const ProblemContent = ({ problem, nextProblem, prevProblem, chapter, dc, starte
                 </button>
                 {showHints && (
                   <div className="mt-4 space-y-3">
-                    {problem.hints.map((hint, i) => (
+                    {problem.hints.map((hint: any, i: number) => (
                       <div
                         key={i}
                         className="text-sm text-muted/70 bg-yellow-500/[0.03] border border-yellow-500/10 rounded-2xl p-4 shadow-lg shadow-yellow-500/5"

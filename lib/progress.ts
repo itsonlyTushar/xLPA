@@ -1,6 +1,7 @@
-import { supabase } from "./supabase";
+import { createClerkSupabaseClient } from "./supabase";
 
 export async function recordAttempt(
+  session: any,
   userId: string,
   problemId: string,
   chapterId: number,
@@ -9,6 +10,7 @@ export async function recordAttempt(
   usedHint: boolean,
   timeTakenMs: number
 ) {
+  const supabase = createClerkSupabaseClient(session);
   const { error } = await supabase.from("attempts").insert({
     user_id: userId,
     problem_id: problemId,
@@ -25,12 +27,14 @@ export async function recordAttempt(
   }
 
   if (passed) {
-    await updateProgress(userId, chapterId);
-    await updateStreak(userId);
+    await updateProgress(session, userId, chapterId);
+    await updateStreak(session, userId);
   }
 }
 
-async function updateProgress(userId: string, chapterId: number) {
+async function updateProgress(session: any, userId: string, chapterId: number) {
+  const supabase = createClerkSupabaseClient(session);
+  
   // Count distinct passed problems for this chapter
   const { data: passedProblems } = await supabase
     .from("attempts")
@@ -67,7 +71,8 @@ async function updateProgress(userId: string, chapterId: number) {
   );
 }
 
-async function updateStreak(userId: string) {
+async function updateStreak(session: any, userId: string) {
+  const supabase = createClerkSupabaseClient(session);
   const today = new Date().toISOString().split("T")[0];
 
   const { data: existing } = await supabase
@@ -112,9 +117,11 @@ async function updateStreak(userId: string) {
 }
 
 export async function scheduleSpacedRepetition(
+  session: any,
   userId: string,
   problemId: string
 ) {
+  const supabase = createClerkSupabaseClient(session);
   const nextReview = new Date();
   nextReview.setDate(nextReview.getDate() + 2); // First review in 2 days
 
@@ -131,9 +138,11 @@ export async function scheduleSpacedRepetition(
 }
 
 export async function advanceSpacedRepetition(
+  session: any,
   userId: string,
   problemId: string
 ) {
+  const supabase = createClerkSupabaseClient(session);
   const { data } = await supabase
     .from("spaced_repetition")
     .select("*")

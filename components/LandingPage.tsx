@@ -71,16 +71,28 @@ export default function LandingPage() {
           </Link>
 
           <div className="hidden md:flex items-center gap-8 text-sm text-muted">
-            <a href="#features" className="hover:text-foreground transition-colors">
+            <a
+              href="#features"
+              className="hover:text-foreground transition-colors"
+            >
               Features
             </a>
-            <a href="#curriculum" className="hover:text-foreground transition-colors">
+            <a
+              href="#curriculum"
+              className="hover:text-foreground transition-colors"
+            >
               Curriculum
             </a>
-            <a href="#system-design" className="hover:text-foreground transition-colors">
+            <a
+              href="#system-design"
+              className="hover:text-foreground transition-colors"
+            >
               System Design
             </a>
-            <a href="#how-it-works" className="hover:text-foreground transition-colors">
+            <a
+              href="#how-it-works"
+              className="hover:text-foreground transition-colors"
+            >
               How It Works
             </a>
           </div>
@@ -103,7 +115,7 @@ export default function LandingPage() {
           <div>
             <div className="inline-flex items-center gap-2 bg-surface border border-border rounded-full px-4 py-1.5 text-sm text-muted mb-8">
               <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-              Open source — MIT License
+              Open source
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight">
@@ -166,7 +178,9 @@ export default function LandingPage() {
                   <span className="text-yellow-300">twoSumSorted</span>
                   <span className="text-white">(arr, target) {"{"}</span>
                   {"\n"}
-                  <span className="text-muted">{"  // Two pointers — O(n) time, O(1) space"}</span>
+                  <span className="text-muted">
+                    {"  // Two pointers — O(n) time, O(1) space"}
+                  </span>
                   {"\n"}
                   <span className="text-blue-400">{"  let"}</span>
                   <span className="text-white">{" left = "}</span>
@@ -184,7 +198,9 @@ export default function LandingPage() {
                   <span className="text-white">{" (left < right) {"}</span>
                   {"\n"}
                   <span className="text-blue-400">{"    const"}</span>
-                  <span className="text-white">{" sum = arr[left] + arr[right];"}</span>
+                  <span className="text-white">
+                    {" sum = arr[left] + arr[right];"}
+                  </span>
                   {"\n"}
                   <span className="text-purple-400">{"    if"}</span>
                   <span className="text-white">{" (sum === target)"}</span>
@@ -193,7 +209,9 @@ export default function LandingPage() {
                   <span className="text-white">{" [left, right];"}</span>
                   {"\n"}
                   <span className="text-purple-400">{"    if"}</span>
-                  <span className="text-white">{" (sum < target) left++;"}</span>
+                  <span className="text-white">
+                    {" (sum < target) left++;"}
+                  </span>
                   {"\n"}
                   <span className="text-purple-400">{"    else"}</span>
                   <span className="text-white">{" right--;"}</span>
@@ -213,11 +231,12 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold">
-              Built for web developers who <span className="text-primary">ship code</span>
+              Built for web developers who{" "}
+              <span className="text-primary">ship code</span>
             </h2>
             <p className="mt-4 text-muted max-w-2xl mx-auto">
-              Not another generic algorithm course. Every concept connects to the
-              React components, API calls, and data processing you do daily.
+              Not another generic algorithm course. Every concept connects to
+              the React components, API calls, and data processing you do daily.
             </p>
           </div>
 
@@ -288,17 +307,34 @@ export default function LandingPage() {
               System Design <span className="text-primary">Interview Prep</span>
             </h2>
             <p className="mt-4 text-muted max-w-2xl mx-auto">
-              Master the building blocks of large-scale systems. 8 chapters covering
-              fundamentals to real-world case studies — everything you need for HLD rounds.
+              Master the building blocks of large-scale systems. 8 chapters
+              covering fundamentals to real-world case studies — everything you
+              need for HLD rounds.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
             {[
-              { icon: Globe, label: "Networking & APIs", desc: "DNS, CDN, REST, gRPC" },
-              { icon: Database, label: "Databases", desc: "Sharding, replication, indexing" },
-              { icon: Server, label: "Distributed Systems", desc: "Caching, queues, load balancing" },
-              { icon: Layers, label: "Case Studies", desc: "URL shortener, Twitter, chat" },
+              {
+                icon: Globe,
+                label: "Networking & APIs",
+                desc: "DNS, CDN, REST, gRPC",
+              },
+              {
+                icon: Database,
+                label: "Databases",
+                desc: "Sharding, replication, indexing",
+              },
+              {
+                icon: Server,
+                label: "Distributed Systems",
+                desc: "Caching, queues, load balancing",
+              },
+              {
+                icon: Layers,
+                label: "Case Studies",
+                desc: "URL shortener, Twitter, chat",
+              },
             ].map((item) => (
               <div
                 key={item.label}
@@ -366,7 +402,8 @@ export default function LandingPage() {
       <section className="py-24 px-6 border-t border-border">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-bold">
-            Ready to think <span className="text-primary">algorithmically</span>?
+            Ready to think <span className="text-primary">algorithmically</span>
+            ?
           </h2>
           <p className="mt-4 text-muted max-w-xl mx-auto">
             Join web developers who are leveling up their problem-solving skills
@@ -391,7 +428,7 @@ export default function LandingPage() {
             </div>
             <span>DSA Learner</span>
           </div>
-          <div>Open source — MIT License</div>
+          <div>Open source</div>
         </div>
       </footer>
     </div>

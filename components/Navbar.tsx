@@ -1,11 +1,12 @@
 "use client";
 
-import { useAuth } from "@/components/AuthProvider";
+import { useUser, useClerk } from "@clerk/nextjs";
 import Link from "next/link";
-import { Zap, LogOut, Flame, User } from "lucide-react";
+import { Zap, LogOut, Flame, User as UserIcon } from "lucide-react";
 
 export default function Navbar() {
-  const { user, signOut } = useAuth();
+  const { user } = useUser();
+  const { signOut } = useClerk();
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
@@ -26,21 +27,21 @@ export default function Navbar() {
           {user ? (
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                {user.user_metadata?.avatar_url ? (
+                {user.imageUrl ? (
                   <img
-                    src={user.user_metadata.avatar_url}
+                    src={user.imageUrl}
                     alt=""
                     className="w-7 h-7 rounded-full"
                     referrerPolicy="no-referrer"
                   />
                 ) : (
                   <div className="w-7 h-7 rounded-full bg-surface flex items-center justify-center">
-                    <User className="w-4 h-4 text-muted" />
+                    <UserIcon className="w-4 h-4 text-muted" />
                   </div>
                 )}
               </div>
               <button
-                onClick={signOut}
+                onClick={() => signOut()}
                 className="text-muted hover:text-foreground transition-colors"
                 title="Sign out"
               >
