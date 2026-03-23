@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Play, RotateCcw } from "lucide-react";
+import { Editor } from "@monaco-editor/react";
 
 interface CodeEditorProps {
   initialCode: string;
@@ -17,62 +18,50 @@ export default function CodeEditor({
   isRunning,
 }: CodeEditorProps) {
   const [code, setCode] = useState(initialCode);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setCode(initialCode);
   }, [initialCode]);
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      // Tab inserts 2 spaces
-      if (e.key === "Tab") {
-        e.preventDefault();
-        const textarea = e.currentTarget;
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const newCode = code.substring(0, start) + "  " + code.substring(end);
-        setCode(newCode);
-        // Restore cursor position
-        requestAnimationFrame(() => {
-          textarea.selectionStart = textarea.selectionEnd = start + 2;
-        });
-      }
-      // Ctrl/Cmd + Enter runs code
-      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        onRun(code);
-      }
-    },
-    [code, onRun]
-  );
 
   function handleReset() {
     setCode(initialCode);
     onReset();
   }
 
-  // Line numbers
-  const lineCount = code.split("\n").length;
+  const handleEditorChange = (value: string | undefined) => {
+    if (value !== undefined) {
+      setCode(value);
+    }
+  };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full border border-border rounded-xl overflow-hidden bg-background shadow-2xl">
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-surface">
-        <span className="text-xs text-muted font-mono">solution.js</span>
+      <div className="flex items-center justify-between px-4 py-2 bg-surface/50 border-b border-border backdrop-blur-sm">
+        <div className="flex items-center gap-2">
+          <div className="flex gap-1.5 px-1">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+            <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
+            <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
+          </div>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted/60 ml-2">
+            solution.js
+          </span>
+        </div>
         <div className="flex items-center gap-2">
           <button
             onClick={handleReset}
-            className="flex items-center gap-1.5 text-xs text-muted hover:text-foreground transition-colors px-2 py-1 rounded"
+            className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted hover:text-foreground transition-all px-2 py-1 rounded hover:bg-white/5"
             title="Reset to starter code"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Reset
           </button>
+          <div className="w-px h-4 bg-border/50 mx-1" />
           <button
             onClick={() => onRun(code)}
             disabled={isRunning}
-            className="flex items-center gap-1.5 text-xs bg-success/20 text-success hover:bg-success/30 disabled:opacity-50 px-3 py-1.5 rounded font-medium transition-colors"
+            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest bg-success/10 text-success hover:bg-success/20 disabled:opacity-50 px-4 py-1.5 rounded-lg border border-success/20 transition-all active:scale-95 shadow-lg shadow-success/10"
           >
             <Play className="w-3.5 h-3.5" />
             {isRunning ? "Running..." : "Run (Ctrl+Enter)"}
@@ -81,27 +70,28 @@ export default function CodeEditor({
       </div>
 
       {/* Editor area */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Line numbers */}
-        <div className="py-4 px-3 text-right select-none border-r border-border bg-background overflow-hidden">
-          {Array.from({ length: lineCount }, (_, i) => (
-            <div
-              key={i}
-              className="text-xs text-muted/40 leading-[1.6] font-mono"
-            >
-              {i + 1}
-            </div>
-          ))}
-        </div>
-
-        {/* Code textarea */}
-        <textarea
-          ref={textareaRef}
+      <div className="flex-1 min-h-0 bg-black/20">
+        <Editor
+          height="100%"
+          defaultLanguage="javascript"
           value={code}
-          onChange={(e) => setCode(e.target.value)}
-          onKeyDown={handleKeyDown}
-          spellCheck={false}
-          className="code-editor code-scroll flex-1 bg-background text-foreground p-4 resize-none text-sm overflow-auto"
+          onChange={handleEditorChange}
+          theme="vs-dark"
+          options={{
+            minimap: { enabled: false },
+            fontSize: 14,
+            smoothScrolling: true,
+            scrollbar: {
+              vertical: "hidden",
+              horizontal: "hidden",
+            },
+          }}
+          onMount={(editor) => {
+            // Add Ctrl+Enter keybinding
+            editor.addCommand(2048 | 3, () => {
+              onRun(editor.getValue());
+            });
+          }}
         />
       </div>
     </div>
