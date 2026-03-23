@@ -141,6 +141,88 @@ export default function Sidebar() {
           Dashboard
         </Link>
 
+        {/* Machine Coding Module */}
+        <div className="mt-5">
+          <div className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest px-3 mb-2">
+            Machine Coding
+          </div>
+
+          {/* MC Overview link */}
+          <Link
+            href="/machine-coding"
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors mb-1 ${
+              pathname === "/machine-coding"
+                ? "bg-primary/10 text-primary"
+                : "text-muted hover:text-foreground hover:bg-surface-hover"
+            }`}
+          >
+            <Code2 className="w-4 h-4" />
+            Overview
+          </Link>
+
+          <nav className="space-y-0.5">
+            {mcChapters.map((ch) => {
+              const problems = getMCProblemsForChapter(ch.id);
+              const isExpanded = expandedMCChapters.has(ch.id);
+              const hasProblems = problems.length > 0;
+              const chapterHasActiveProblem =
+                activeMCProblemId && problems.some((p) => p.id === activeMCProblemId);
+
+              return (
+                <div key={ch.id}>
+                  {/* Chapter row */}
+                  <div className="flex items-center">
+                    {hasProblems ? (
+                      <button
+                        onClick={() => toggleMCChapter(ch.id)}
+                        className="p-1 text-muted/40 hover:text-muted transition-colors"
+                      >
+                        {isExpanded ? (
+                          <ChevronDown className="w-3 h-3" />
+                        ) : (
+                          <ChevronRight className="w-3 h-3" />
+                        )}
+                      </button>
+                    ) : (
+                      <span className="w-5 shrink-0" />
+                    )}
+                    <span
+                      className={`flex items-center gap-2 flex-1 px-2 py-1.5 text-sm min-w-0 ${
+                        chapterHasActiveProblem
+                          ? "text-primary font-medium"
+                          : "text-foreground/80"
+                      }`}
+                    >
+                      <span className="shrink-0">{ch.icon}</span>
+                      <span className="truncate">{ch.title}</span>
+                    </span>
+                  </div>
+
+                  {/* Problem list */}
+                  {isExpanded && hasProblems && (
+                    <div className="ml-5 pl-3 border-l border-border/50 mt-0.5 mb-1 space-y-0.5">
+                      {problems.map((p) => (
+                        <Link
+                          key={p.id}
+                          href={`/machine-coding/problem/${p.id}`}
+                          className={`block px-2 py-1 rounded-md text-xs transition-colors truncate ${
+                            activeMCProblemId === p.id
+                              ? "bg-primary/10 text-primary font-medium"
+                              : "text-muted hover:text-foreground hover:bg-surface-hover"
+                          }`}
+                          title={p.title}
+                        >
+                          {p.title}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </nav>
+        </div>
+
         {/* Chapter navigation */}
         <div className="mt-5">
           <div className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest px-3 mb-2">
@@ -294,88 +376,6 @@ export default function Sidebar() {
                           </Link>
                         );
                       })}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* Machine Coding Module */}
-        <div className="mt-5">
-          <div className="text-[10px] font-semibold text-muted/60 uppercase tracking-widest px-3 mb-2">
-            Machine Coding
-          </div>
-
-          {/* MC Overview link */}
-          <Link
-            href="/machine-coding"
-            className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors mb-1 ${
-              pathname === "/machine-coding"
-                ? "bg-primary/10 text-primary"
-                : "text-muted hover:text-foreground hover:bg-surface-hover"
-            }`}
-          >
-            <Code2 className="w-4 h-4" />
-            Overview
-          </Link>
-
-          <nav className="space-y-0.5">
-            {mcChapters.map((ch) => {
-              const problems = getMCProblemsForChapter(ch.id);
-              const isExpanded = expandedMCChapters.has(ch.id);
-              const hasProblems = problems.length > 0;
-              const chapterHasActiveProblem =
-                activeMCProblemId && problems.some((p) => p.id === activeMCProblemId);
-
-              return (
-                <div key={ch.id}>
-                  {/* Chapter row */}
-                  <div className="flex items-center">
-                    {hasProblems ? (
-                      <button
-                        onClick={() => toggleMCChapter(ch.id)}
-                        className="p-1 text-muted/40 hover:text-muted transition-colors"
-                      >
-                        {isExpanded ? (
-                          <ChevronDown className="w-3 h-3" />
-                        ) : (
-                          <ChevronRight className="w-3 h-3" />
-                        )}
-                      </button>
-                    ) : (
-                      <span className="w-5 shrink-0" />
-                    )}
-                    <span
-                      className={`flex items-center gap-2 flex-1 px-2 py-1.5 text-sm min-w-0 ${
-                        chapterHasActiveProblem
-                          ? "text-primary font-medium"
-                          : "text-foreground/80"
-                      }`}
-                    >
-                      <span className="shrink-0">{ch.icon}</span>
-                      <span className="truncate">{ch.title}</span>
-                    </span>
-                  </div>
-
-                  {/* Problem list */}
-                  {isExpanded && hasProblems && (
-                    <div className="ml-5 pl-3 border-l border-border/50 mt-0.5 mb-1 space-y-0.5">
-                      {problems.map((p) => (
-                        <Link
-                          key={p.id}
-                          href={`/machine-coding/problem/${p.id}`}
-                          className={`block px-2 py-1 rounded-md text-xs transition-colors truncate ${
-                            activeMCProblemId === p.id
-                              ? "bg-primary/10 text-primary font-medium"
-                              : "text-muted hover:text-foreground hover:bg-surface-hover"
-                          }`}
-                          title={p.title}
-                        >
-                          {p.title}
-                        </Link>
-                      ))}
                     </div>
                   )}
                 </div>

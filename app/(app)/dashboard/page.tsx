@@ -73,7 +73,10 @@ function RadialProgress({
           style={{ transition: "stroke-dashoffset 0.6s ease" }}
         />
       </svg>
-      <div className="absolute flex flex-col items-center justify-center" style={{ width: size, height: size }}>
+      <div
+        className="absolute flex flex-col items-center justify-center"
+        style={{ width: size, height: size }}
+      >
         <span className="text-xl font-bold">{Math.round(pct * 100)}%</span>
         {sublabel && <span className="text-[10px] text-muted">{sublabel}</span>}
       </div>
@@ -94,7 +97,11 @@ function MiniBarChart({
 }) {
   const barWidth = 100 / data.length;
   return (
-    <svg viewBox={`0 0 ${data.length * 32} ${height}`} className="w-full" preserveAspectRatio="none">
+    <svg
+      viewBox={`0 0 ${data.length * 32} ${height}`}
+      className="w-full"
+      preserveAspectRatio="none"
+    >
       {data.map((d, i) => {
         const barH = d.max > 0 ? (d.value / d.max) * (height - 8) : 0;
         return (
@@ -183,9 +190,13 @@ function ProgressBar({
 }
 
 // Status for all DSA chapters – in production this comes from Supabase
-const userChapterStatus: Record<number, "locked" | "active" | "completed"> = Object.fromEntries(
-  Array.from({ length: 18 }, (_, i) => [i + 1, i === 0 ? "active" : "locked"])
-) as Record<number, "locked" | "active" | "completed">;
+const userChapterStatus: Record<number, "locked" | "active" | "completed"> =
+  Object.fromEntries(
+    Array.from({ length: 18 }, (_, i) => [
+      i + 1,
+      i === 0 ? "active" : "locked",
+    ]),
+  ) as Record<number, "locked" | "active" | "completed">;
 userChapterStatus[1] = "active";
 
 export default function DashboardPage() {
@@ -205,15 +216,18 @@ export default function DashboardPage() {
 
   // Per-chapter solved counts (placeholder)
   const chapterSolved: Record<number, number> = {};
-  chapters.forEach((ch) => { chapterSolved[ch.id] = 0; });
+  chapters.forEach((ch) => {
+    chapterSolved[ch.id] = 0;
+  });
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
       {/* ─── HEADER ─── */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <h1 className="text-3xl font-bold font-playfair">Dashboard</h1>
         <p className="text-muted mt-1">
-          Track your progress across all {chapters.length + mcChapters.length + sdChapters.length} chapters
+          Track your progress across all{" "}
+          {chapters.length + mcChapters.length + sdChapters.length} chapters
         </p>
       </div>
 
@@ -225,7 +239,12 @@ export default function DashboardPage() {
             <Trophy className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <div className="text-2xl font-bold">{totalSolved}<span className="text-sm font-normal text-muted">/{totalAllProblems}</span></div>
+            <div className="text-2xl font-bold">
+              {totalSolved}
+              <span className="text-sm font-normal text-muted">
+                /{totalAllProblems}
+              </span>
+            </div>
             <div className="text-xs text-muted">Problems Solved</div>
           </div>
         </div>
@@ -236,7 +255,10 @@ export default function DashboardPage() {
             <Flame className="w-6 h-6 text-orange-500" />
           </div>
           <div>
-            <div className="text-2xl font-bold">{currentStreak} <span className="text-sm font-normal text-muted">days</span></div>
+            <div className="text-2xl font-bold">
+              {currentStreak}{" "}
+              <span className="text-sm font-normal text-muted">days</span>
+            </div>
             <div className="text-xs text-muted">Current Streak</div>
           </div>
         </div>
@@ -247,7 +269,9 @@ export default function DashboardPage() {
             <Clock className="w-6 h-6 text-blue-500" />
           </div>
           <div>
-            <div className="text-2xl font-bold">0<span className="text-sm font-normal text-muted"> hrs</span></div>
+            <div className="text-2xl font-bold">
+              0<span className="text-sm font-normal text-muted"> hrs</span>
+            </div>
             <div className="text-xs text-muted">Total Study Time</div>
           </div>
         </div>
@@ -258,7 +282,9 @@ export default function DashboardPage() {
             <Target className="w-6 h-6 text-emerald-500" />
           </div>
           <div>
-            <div className="text-2xl font-bold">—<span className="text-sm font-normal text-muted"> %</span></div>
+            <div className="text-2xl font-bold">
+              —<span className="text-sm font-normal text-muted"> %</span>
+            </div>
             <div className="text-xs text-muted">First-Attempt Accuracy</div>
           </div>
         </div>
@@ -268,7 +294,9 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
         {/* Overall Progress Ring */}
         <div className="bg-surface border border-border rounded-xl p-6 flex flex-col items-center justify-center relative">
-          <h3 className="text-sm font-semibold text-muted mb-4 self-start">Overall Progress</h3>
+          <h3 className="text-sm font-semibold text-muted mb-4 self-start">
+            Overall Progress
+          </h3>
           <div className="relative">
             <RadialProgress
               value={totalSolved}
@@ -280,59 +308,99 @@ export default function DashboardPage() {
             />
           </div>
           <div className="flex gap-6 mt-5 text-xs text-muted">
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-primary inline-block" /> DSA</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-violet-500 inline-block" /> Machine Coding</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-sky-500 inline-block" /> System Design</span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-violet-500 inline-block" />{" "}
+              Machine Coding
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-primary inline-block" />{" "}
+              DSA
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-sky-500 inline-block" />{" "}
+              System Design
+            </span>
           </div>
         </div>
 
         {/* Module Breakdown Bars */}
         <div className="bg-surface border border-border rounded-xl p-6">
-          <h3 className="text-sm font-semibold text-muted mb-5">Module Breakdown</h3>
+          <h3 className="text-sm font-semibold text-muted mb-5">
+            Module Breakdown
+          </h3>
           <div className="space-y-5">
-            <div>
-              <div className="flex justify-between text-sm mb-1.5">
-                <span className="flex items-center gap-2">
-                  <BookOpen className="w-4 h-4 text-primary" /> DSA
-                </span>
-                <span className="text-muted">{solvedDSA}/{totalDSAProblems}</span>
-              </div>
-              <ProgressBar value={solvedDSA} max={totalDSAProblems} color="bg-primary" />
-            </div>
             <div>
               <div className="flex justify-between text-sm mb-1.5">
                 <span className="flex items-center gap-2">
                   <Code2 className="w-4 h-4 text-violet-500" /> Machine Coding
                 </span>
-                <span className="text-muted">{solvedMC}/{totalMCProblems}</span>
+                <span className="text-muted">
+                  {solvedMC}/{totalMCProblems}
+                </span>
               </div>
-              <ProgressBar value={solvedMC} max={totalMCProblems} color="bg-violet-500" />
+              <ProgressBar
+                value={solvedMC}
+                max={totalMCProblems}
+                color="bg-violet-500"
+              />
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-1.5">
+                <span className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-primary" /> DSA
+                </span>
+                <span className="text-muted">
+                  {solvedDSA}/{totalDSAProblems}
+                </span>
+              </div>
+              <ProgressBar
+                value={solvedDSA}
+                max={totalDSAProblems}
+                color="bg-primary"
+              />
             </div>
             <div>
               <div className="flex justify-between text-sm mb-1.5">
                 <span className="flex items-center gap-2">
                   <Layers className="w-4 h-4 text-sky-500" /> System Design
                 </span>
-                <span className="text-muted">{solvedSD}/{totalSDTopics}</span>
+                <span className="text-muted">
+                  {solvedSD}/{totalSDTopics}
+                </span>
               </div>
-              <ProgressBar value={solvedSD} max={totalSDTopics} color="bg-sky-500" />
+              <ProgressBar
+                value={solvedSD}
+                max={totalSDTopics}
+                color="bg-sky-500"
+              />
             </div>
           </div>
           <div className="mt-5 pt-4 border-t border-border flex items-center justify-between text-xs text-muted">
-            <span className="flex items-center gap-1"><TrendingUp className="w-3 h-3" /> Best streak: {bestStreak} days</span>
-            <span>{chapters.length + mcChapters.length + sdChapters.length} total chapters</span>
+            <span className="flex items-center gap-1">
+              <TrendingUp className="w-3 h-3" /> Best streak: {bestStreak} days
+            </span>
+            <span>
+              {chapters.length + mcChapters.length + sdChapters.length} total
+              chapters
+            </span>
           </div>
         </div>
 
         {/* Activity Heatmap */}
         <div className="bg-surface border border-border rounded-xl p-6">
-          <h3 className="text-sm font-semibold text-muted mb-4">Activity (12 weeks)</h3>
+          <h3 className="text-sm font-semibold text-muted mb-4">
+            Activity (12 weeks)
+          </h3>
           <ActivityHeatmap />
           <div className="flex items-center justify-between mt-4 text-[10px] text-muted">
             <span>Less</span>
             <div className="flex gap-1">
               {["#111", "#2d1515", "#5c1a1a", "#991b1b", "#dc2626"].map((c) => (
-                <div key={c} className="w-3 h-3 rounded-sm" style={{ backgroundColor: c }} />
+                <div
+                  key={c}
+                  className="w-3 h-3 rounded-sm"
+                  style={{ backgroundColor: c }}
+                />
               ))}
             </div>
             <span>More</span>
@@ -354,9 +422,12 @@ export default function DashboardPage() {
       <div className="bg-surface border border-border rounded-xl p-6 mb-8">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-muted flex items-center gap-2">
-            <BarChart3 className="w-4 h-4" /> DSA Chapters — Problems per Chapter
+            <BarChart3 className="w-4 h-4" /> DSA Chapters — Problems per
+            Chapter
           </h3>
-          <span className="text-xs text-muted">{chapters.length} chapters · {totalDSAProblems} problems</span>
+          <span className="text-xs text-muted">
+            {chapters.length} chapters · {totalDSAProblems} problems
+          </span>
         </div>
         <div className="overflow-x-auto">
           <div className="min-w-[600px]">
@@ -369,9 +440,16 @@ export default function DashboardPage() {
               color="#dc2626"
               height={80}
             />
-            <div className="flex mt-2" style={{ minWidth: chapters.length * 32 }}>
+            <div
+              className="flex mt-2"
+              style={{ minWidth: chapters.length * 32 }}
+            >
               {chapters.map((ch) => (
-                <div key={ch.id} className="text-[9px] text-muted text-center" style={{ width: 32 }}>
+                <div
+                  key={ch.id}
+                  className="text-[9px] text-muted text-center"
+                  style={{ width: 32 }}
+                >
                   {ch.title.slice(0, 3)}
                 </div>
               ))}
@@ -381,95 +459,6 @@ export default function DashboardPage() {
       </div>
 
       {/* ─── MODULE SECTIONS ─── */}
-
-      {/* DSA Module */}
-      <section className="mb-10">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-primary" />
-            Data Structures &amp; Algorithms
-            <span className="text-xs font-normal text-muted bg-border/40 px-2 py-0.5 rounded-full ml-1">
-              {chapters.length} chapters
-            </span>
-          </h2>
-          <Link href="/chapter/arrays" className="text-xs text-primary hover:underline flex items-center gap-1">
-            Continue learning <ArrowRight className="w-3 h-3" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {chapters.map((ch) => {
-            const status = userChapterStatus[ch.id] ?? "locked";
-            const isLocked = status === "locked";
-            const isCompleted = status === "completed";
-            const isActive = status === "active";
-            const solved = chapterSolved[ch.id] ?? 0;
-            const pct = ch.problemCount > 0 ? Math.round((solved / ch.problemCount) * 100) : 0;
-
-            return (
-              <div key={ch.id} className="relative">
-                {isLocked ? (
-                  <div className="flex flex-col p-4 rounded-xl border border-border bg-surface/40 opacity-50 h-full">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-border/30 flex items-center justify-center shrink-0">
-                        <Lock className="w-3.5 h-3.5 text-muted" />
-                      </div>
-                      <div className="min-w-0">
-                        <span className="text-xs font-mono text-muted">CH.{String(ch.number).padStart(2, "0")}</span>
-                        <h4 className="font-medium text-sm text-muted truncate">{ch.title}</h4>
-                      </div>
-                    </div>
-                    <div className="mt-auto flex items-center justify-between text-xs text-muted/60">
-                      <span>{ch.problemCount} problems</span>
-                      <span className="bg-border/30 px-2 py-0.5 rounded-full">Locked</span>
-                    </div>
-                  </div>
-                ) : (
-                  <Link
-                    href={`/chapter/${ch.slug}`}
-                    className={`flex flex-col p-4 rounded-xl border transition-all group h-full ${
-                      isActive
-                        ? "border-primary/40 bg-primary/5 hover:border-primary/60 hover:bg-primary/10"
-                        : "border-success/40 bg-success/5 hover:border-success/60"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      <div
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold font-mono ${
-                          isCompleted ? "bg-success/20 text-success" : "bg-primary/20 text-primary"
-                        }`}
-                      >
-                        {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : ch.number}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] font-mono text-muted">CH.{String(ch.number).padStart(2, "0")}</span>
-                          {isActive && (
-                            <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-full leading-none">Active</span>
-                          )}
-                          {isCompleted && (
-                            <span className="text-[10px] bg-success/20 text-success px-1.5 py-0.5 rounded-full leading-none">Done</span>
-                          )}
-                        </div>
-                        <h4 className="font-semibold text-sm truncate">{ch.title}</h4>
-                      </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                    </div>
-                    <p className="text-xs text-muted line-clamp-2 mb-3">{ch.description}</p>
-                    <div className="mt-auto">
-                      <div className="flex justify-between text-[11px] text-muted mb-1">
-                        <span>{solved}/{ch.problemCount} solved</span>
-                        <span>{pct}%</span>
-                      </div>
-                      <ProgressBar value={solved} max={ch.problemCount} color={isCompleted ? "bg-success" : "bg-primary"} />
-                    </div>
-                  </Link>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
 
       {/* Machine Coding Module */}
       <section className="mb-10">
@@ -481,7 +470,10 @@ export default function DashboardPage() {
               {mcChapters.length} chapters · {totalMCProblems} problems
             </span>
           </h2>
-          <Link href="/machine-coding" className="text-xs text-violet-400 hover:underline flex items-center gap-1">
+          <Link
+            href="/machine-coding"
+            className="text-xs text-violet-400 hover:underline flex items-center gap-1"
+          >
             View all <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
@@ -498,21 +490,154 @@ export default function DashboardPage() {
                   {ch.icon}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="text-[10px] font-mono text-muted">CH.{String(ch.number).padStart(2, "0")}</span>
+                  <span className="text-[10px] font-mono text-muted">
+                    CH.{String(ch.number).padStart(2, "0")}
+                  </span>
                   <h4 className="font-semibold text-sm truncate">{ch.title}</h4>
                 </div>
                 <ArrowRight className="w-3.5 h-3.5 text-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
               </div>
-              <p className="text-xs text-muted line-clamp-2 mb-3">{ch.description}</p>
+              <p className="text-xs text-muted line-clamp-2 mb-3">
+                {ch.description}
+              </p>
               <div className="mt-auto">
                 <div className="flex justify-between text-[11px] text-muted mb-1">
-                  <span className="flex items-center gap-1"><FileCode2 className="w-3 h-3" /> {ch.problemCount} problems</span>
+                  <span className="flex items-center gap-1">
+                    <FileCode2 className="w-3 h-3" /> {ch.problemCount} problems
+                  </span>
                   <span>0%</span>
                 </div>
-                <ProgressBar value={0} max={ch.problemCount} color="bg-violet-500" />
+                <ProgressBar
+                  value={0}
+                  max={ch.problemCount}
+                  color="bg-violet-500"
+                />
               </div>
             </Link>
           ))}
+        </div>
+      </section>
+
+      {/* DSA Module */}
+      <section className="mb-10">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-primary" />
+            Data Structures &amp; Algorithms
+            <span className="text-xs font-normal text-muted bg-border/40 px-2 py-0.5 rounded-full ml-1">
+              {chapters.length} chapters
+            </span>
+          </h2>
+          <Link
+            href="/chapter/arrays"
+            className="text-xs text-primary hover:underline flex items-center gap-1"
+          >
+            Continue learning <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {chapters.map((ch) => {
+            const status = userChapterStatus[ch.id] ?? "locked";
+            const isLocked = status === "locked";
+            const isCompleted = status === "completed";
+            const isActive = status === "active";
+            const solved = chapterSolved[ch.id] ?? 0;
+            const pct =
+              ch.problemCount > 0
+                ? Math.round((solved / ch.problemCount) * 100)
+                : 0;
+
+            return (
+              <div key={ch.id} className="relative">
+                {isLocked ? (
+                  <div className="flex flex-col p-4 rounded-xl border border-border bg-surface/40 opacity-50 h-full">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 rounded-lg bg-border/30 flex items-center justify-center shrink-0">
+                        <Lock className="w-3.5 h-3.5 text-muted" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-xs font-mono text-muted">
+                          CH.{String(ch.number).padStart(2, "0")}
+                        </span>
+                        <h4 className="font-medium text-sm text-muted truncate">
+                          {ch.title}
+                        </h4>
+                      </div>
+                    </div>
+                    <div className="mt-auto flex items-center justify-between text-xs text-muted/60">
+                      <span>{ch.problemCount} problems</span>
+                      <span className="bg-border/30 px-2 py-0.5 rounded-full">
+                        Locked
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    href={`/chapter/${ch.slug}`}
+                    className={`flex flex-col p-4 rounded-xl border transition-all group h-full ${
+                      isActive
+                        ? "border-primary/40 bg-primary/5 hover:border-primary/60 hover:bg-primary/10"
+                        : "border-success/40 bg-success/5 hover:border-success/60"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold font-mono ${
+                          isCompleted
+                            ? "bg-success/20 text-success"
+                            : "bg-primary/20 text-primary"
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <CheckCircle2 className="w-4 h-4" />
+                        ) : (
+                          ch.number
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-mono text-muted">
+                            CH.{String(ch.number).padStart(2, "0")}
+                          </span>
+                          {isActive && (
+                            <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-full leading-none">
+                              Active
+                            </span>
+                          )}
+                          {isCompleted && (
+                            <span className="text-[10px] bg-success/20 text-success px-1.5 py-0.5 rounded-full leading-none">
+                              Done
+                            </span>
+                          )}
+                        </div>
+                        <h4 className="font-semibold text-sm truncate">
+                          {ch.title}
+                        </h4>
+                      </div>
+                      <ArrowRight className="w-3.5 h-3.5 text-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                    </div>
+                    <p className="text-xs text-muted line-clamp-2 mb-3">
+                      {ch.description}
+                    </p>
+                    <div className="mt-auto">
+                      <div className="flex justify-between text-[11px] text-muted mb-1">
+                        <span>
+                          {solved}/{ch.problemCount} solved
+                        </span>
+                        <span>{pct}%</span>
+                      </div>
+                      <ProgressBar
+                        value={solved}
+                        max={ch.problemCount}
+                        color={isCompleted ? "bg-success" : "bg-primary"}
+                      />
+                    </div>
+                  </Link>
+                )}
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -523,10 +648,14 @@ export default function DashboardPage() {
             <Layers className="w-5 h-5 text-sky-500" />
             System Design
             <span className="text-xs font-normal text-muted bg-border/40 px-2 py-0.5 rounded-full ml-1">
-              {sdChapters.length} chapters · {totalSDTopics} topics · {totalCaseStudies} case studies
+              {sdChapters.length} chapters · {totalSDTopics} topics ·{" "}
+              {totalCaseStudies} case studies
             </span>
           </h2>
-          <Link href="/system-design" className="text-xs text-sky-400 hover:underline flex items-center gap-1">
+          <Link
+            href="/system-design"
+            className="text-xs text-sky-400 hover:underline flex items-center gap-1"
+          >
             View all <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
@@ -543,17 +672,23 @@ export default function DashboardPage() {
                   {ch.icon}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="text-[10px] font-mono text-muted">CH.{String(ch.number).padStart(2, "0")}</span>
+                  <span className="text-[10px] font-mono text-muted">
+                    CH.{String(ch.number).padStart(2, "0")}
+                  </span>
                   <h4 className="font-semibold text-sm truncate">{ch.title}</h4>
                 </div>
                 <ArrowRight className="w-3.5 h-3.5 text-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
               </div>
-              <p className="text-xs text-muted line-clamp-2 mb-3">{ch.description}</p>
+              <p className="text-xs text-muted line-clamp-2 mb-3">
+                {ch.description}
+              </p>
               <div className="mt-auto">
                 <div className="flex justify-between text-[11px] text-muted mb-1">
                   <span className="flex items-center gap-1">
                     <Server className="w-3 h-3" />
-                    {ch.id === 8 ? `${ch.topicCount} case studies` : `${ch.topicCount} topics`}
+                    {ch.id === 8
+                      ? `${ch.topicCount} case studies`
+                      : `${ch.topicCount} topics`}
                   </span>
                   <span>0%</span>
                 </div>
@@ -570,9 +705,7 @@ export default function DashboardPage() {
           href="/chapter/arrays"
           className="group flex items-center gap-3 p-4 rounded-xl border border-border bg-surface hover:border-primary/40 transition-all"
         >
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
-            <Zap className="w-5 h-5 text-primary" />
-          </div>
+
           <div>
             <span className="font-semibold text-sm">Continue DSA</span>
             <p className="text-xs text-muted">Chapter 1 — Arrays</p>

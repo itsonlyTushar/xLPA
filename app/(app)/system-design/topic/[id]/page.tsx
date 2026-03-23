@@ -95,7 +95,7 @@ export default function TopicDetailPage({
             {topic.estimatedMinutes} min read
           </span>
         </div>
-        <h1 className="text-3xl font-bold">{topic.title}</h1>
+        <h1 className="text-3xl font-bold font-playfair">{topic.title}</h1>
         <p className="text-muted mt-3 leading-relaxed">{topic.overview}</p>
       </div>
 
@@ -116,7 +116,7 @@ export default function TopicDetailPage({
 
       {/* Key Points */}
       <section className="mb-10">
-        <h2 className="flex items-center gap-2 text-lg font-semibold mb-4">
+        <h2 className="flex items-center gap-2 text-lg font-semibold font-playfair mb-4">
           <Lightbulb className="w-4 h-4 text-yellow-400" />
           Key Points
         </h2>
@@ -134,7 +134,7 @@ export default function TopicDetailPage({
 
       {/* Deep Dive Sections */}
       <section className="mb-10">
-        <h2 className="flex items-center gap-2 text-lg font-semibold mb-4">
+        <h2 className="flex items-center gap-2 text-lg font-semibold font-playfair mb-4">
           <BookOpen className="w-4 h-4 text-blue-400" />
           Deep Dive
         </h2>

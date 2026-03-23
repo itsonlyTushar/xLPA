@@ -1,22 +1,28 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Playfair_Display, Pacifico } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+});
+
+const pacifico = Pacifico({
+  variable: "--font-pacifico",
+  weight: "400",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "DSA Learner — Master Algorithms with JavaScript",
+  title: "xLPA — Master Technical Interviews",
   description:
-    "An interactive DSA learning platform for JavaScript web developers. Master arrays, search, sorting, hash maps, recursion, and backtracking through hands-on coding.",
+    "An interactive platform for mastering Machine Coding, DSA, and System Design. Prepare for your next engineering interview with hands-on coding.",
 };
 
 export default function RootLayout({
@@ -28,7 +34,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html
         lang="en"
-        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+        className={`${inter.variable} ${playfair.variable} ${pacifico.variable} h-full antialiased font-sans`}
       >
         <body 
           className="min-h-full flex flex-col bg-black text-gray-200"

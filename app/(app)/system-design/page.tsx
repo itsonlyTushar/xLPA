@@ -28,7 +28,7 @@ export default function SystemDesignPage() {
           <Layers className="w-3 h-3" />
           System Design (HLD)
         </div>
-        <h1 className="text-3xl font-bold">System Design Interview Prep</h1>
+        <h1 className="text-3xl font-bold font-playfair">System Design Interview Prep</h1>
         <p className="text-muted mt-2">
           {sdChapters.length} chapters · {totalTopics} topics · {totalCases}{" "}
           case studies — Master the building blocks of large-scale systems

@@ -22,7 +22,7 @@ export default function MachineCodingPage() {
           <Code2 className="w-3 h-3" />
           Machine Coding
         </div>
-        <h1 className="text-3xl font-bold">Machine Coding Interview Prep</h1>
+        <h1 className="text-3xl font-bold font-playfair">Machine Coding Interview Prep</h1>
         <p className="text-muted mt-2">
           {mcChapters.length} chapters · {totalProblems} problems — Build
           real-world React components in a live IDE

@@ -24,7 +24,7 @@ export default function ChapterPage({
   if (!chapter) {
     return (
       <div className="max-w-4xl mx-auto px-6 py-20 text-center">
-        <h1 className="text-2xl font-bold">Chapter not found</h1>
+        <h1 className="text-2xl font-bold font-playfair">Chapter not found</h1>
         <Link href="/dashboard" className="text-primary mt-4 inline-block">
           ← Back to dashboard
         </Link>
@@ -55,7 +55,7 @@ export default function ChapterPage({
             Active
           </span>
         </div>
-        <h1 className="text-3xl font-bold">{chapter.title}</h1>
+        <h1 className="text-3xl font-bold font-playfair">{chapter.title}</h1>
         <p className="text-muted mt-2 max-w-2xl">{chapter.description}</p>
 
         {/* Web dev connection */}
@@ -69,7 +69,7 @@ export default function ChapterPage({
 
       {/* Phase 1: JS Bridge Topics */}
       <div className="mb-10">
-        <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
+        <h2 className="text-lg font-semibold font-playfair flex items-center gap-2 mb-4">
           <Code2 className="w-5 h-5 text-blue-400" />
           Phase 1 — JS Fundamentals Bridge
         </h2>
@@ -96,7 +96,7 @@ export default function ChapterPage({
 
       {/* Phase 2: Core Concepts */}
       <div className="mb-10">
-        <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
+        <h2 className="text-lg font-semibold font-playfair flex items-center gap-2 mb-4">
           <BookOpen className="w-5 h-5 text-green-400" />
           Phase 2 — Core Concepts
         </h2>
@@ -114,7 +114,7 @@ export default function ChapterPage({
 
       {/* Phase 3: Problem Set */}
       <div>
-        <h2 className="text-lg font-semibold mb-4">
+        <h2 className="text-lg font-semibold font-playfair mb-4">
           Phase 3 — Problems ({problems.length} available)
         </h2>
 

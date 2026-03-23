@@ -25,8 +25,10 @@ module.exports = {
         warning: "#eab308",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "Fira Code", "Cascadia Code", "monospace"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        playfair: ["var(--font-playfair)", "serif"],
+        inter: ["var(--font-inter)", "sans-serif"],
+        pacifico: ["var(--font-pacifico)", "cursive"],
       },
     },
   },

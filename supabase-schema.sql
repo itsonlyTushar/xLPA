@@ -1,4 +1,4 @@
--- DSA Learner Database Schema for Supabase
+-- DSA Studio Database Schema for Supabase
 -- Run this in the Supabase SQL Editor
 
 -- Profiles table (extends Supabase auth.users)
