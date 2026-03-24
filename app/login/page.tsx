@@ -5,6 +5,8 @@ import { Zap } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import XLPALogo from "@/components/XLPALogo";
+import Grainient from "@/components/Grainient";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,26 +35,39 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 bg-black relative overflow-hidden">
-      {/* Background Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-[radial-gradient(circle_at_center,rgba(220,38,38,0.08),transparent_70%)] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+      {/* Background Grainient */}
+      <div className="absolute inset-0 z-0 opacity-100">
+        <Grainient
+          color1="#030303"
+          color2="#363e0f "
+          color3="#030302"
+          timeSpeed={0.25}
+          colorBalance={0}
+          warpStrength={1}
+          warpFrequency={5}
+          warpSpeed={2}
+          warpAmplitude={50}
+          blendAngle={0}
+          blendSoftness={0.05}
+          rotationAmount={500}
+          noiseScale={2}
+          grainAmount={0.1}
+          grainScale={2}
+          grainAnimated={false}
+          contrast={1.5}
+          gamma={1}
+          saturation={1}
+          centerX={0}
+          centerY={0}
+          zoom={0.9}
+        />
+      </div>
 
       <div className="relative w-full max-w-md">
         <div className="text-center mb-10">
-          <Link href="/" className="inline-flex items-center gap-3 mb-8 group">
-            <span className="font-bold text-3xl tracking-tight font-playfair">
-              <span className="font-pacifico font-normal lowercase mx-1">
-                x
-              </span>
-              LPA
-            </span>
-          </Link>
-          <h1 className="text-3xl font-bold font-playfair tracking-tight">
-            Welcome
-          </h1>
-          <p className="text-muted/60 mt-3 text-lg">
-            Pick up where you left off on your path to mastery.
-          </p>
+          <div className="flex justify-center mb-8">
+            <XLPALogo href="/" size="2xl" />
+          </div>
         </div>
 
         <div className="bg-white/5 border border-white/10 backdrop-blur-sm rounded-3xl p-10 shadow-2xl">
@@ -80,7 +95,7 @@ export default function LoginPage() {
             className="text-sm font-medium text-muted/60 hover:text-primary transition-colors inline-flex items-center gap-1 group"
           >
             Explore{" "}
-            <span className="font-pacifico font-normal lowercase">x</span>LPA
+            <XLPALogo showLogoOnly size="xs" className="text-foreground/90" />{" "}
             first
             <span className="group-hover:translate-x-1 transition-transform">
               →

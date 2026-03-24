@@ -2,21 +2,24 @@
 
 import { useUser, useClerk } from "@clerk/nextjs";
 import Link from "next/link";
-import { LogOut, Flame, User as UserIcon } from "lucide-react";
+import { LogOut, Flame, User as UserIcon, Menu } from "lucide-react";
 
-export default function Navbar() {
+export default function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const { user } = useUser();
   const { signOut } = useClerk();
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/40 bg-black/60 backdrop-blur-md">
-      <div className="flex items-center justify-between px-6 h-16 max-w-7xl mx-auto">
-        <Link href="/dashboard" className="flex items-center gap-2 group">
-          <span className="font-bold text-xl tracking-tight font-playfair">
-            <span className="font-pacifico font-normal lowercase mx-1">x</span>
-            LPA
-          </span>
-        </Link>
+    <nav className="sticky top-0 z-50 border-b border-border/40 bg-black/60 backdrop-blur-md shrink-0">
+      <div className="flex items-center justify-between px-4 sm:px-6 h-16 w-full max-w-7xl mx-auto">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={onMenuClick}
+            className="p-2 -ml-2 text-muted hover:text-foreground md:hidden transition-colors"
+            aria-label="Toggle menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        </div>
 
         <div className="flex items-center gap-6">
           <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-muted">

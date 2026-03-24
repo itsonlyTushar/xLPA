@@ -273,6 +273,7 @@ const IDEInterior = ({ initialCode, testCases }: ReactIDEProps) => {
   const [isRunning, setIsRunning] = useState(false);
   const [runState, setRunState] = useState<RunState | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [showPreview, setShowPreview] = useState(true);
   const [isCreatingFile, setIsCreatingFile] = useState(false);
   const [newFileName, setNewFileName] = useState("");
 
@@ -299,6 +300,7 @@ const IDEInterior = ({ initialCode, testCases }: ReactIDEProps) => {
   const handleRunTests = () => {
     setIsRunning(true);
     setActiveTab("tests");
+    setShowPreview(true);
     setRunState(null);
   };
 
@@ -357,7 +359,9 @@ const IDEInterior = ({ initialCode, testCases }: ReactIDEProps) => {
       )}
 
       {/* Editor Area */}
-      <div className="flex-1 flex flex-col min-w-0 border-r border-border relative group">
+      <div
+        className={`flex-1 flex flex-col min-w-0 ${showPreview ? "border-r border-border" : ""} relative group`}
+      >
         {/* Toggle Button for Sidebar */}
         <div
           onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -377,6 +381,15 @@ const IDEInterior = ({ initialCode, testCases }: ReactIDEProps) => {
           </div>
 
           <div className="flex items-center gap-4">
+            <button
+              onClick={() => setShowPreview(!showPreview)}
+              className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all px-2 py-1 rounded ${showPreview ? "text-muted hover:text-foreground" : "text-primary bg-primary/10 border border-primary/20"}`}
+              title={showPreview ? "Hide Preview" : "Show Preview"}
+            >
+              <Eye className="w-3.5 h-3.5" />
+              <span>Preview</span>
+            </button>
+            <div className="w-px h-5 bg-border/50 mx-1" />
             <button
               onClick={() => window.location.reload()}
               className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-muted hover:text-foreground transition-all px-2 py-1 rounded"
@@ -400,63 +413,65 @@ const IDEInterior = ({ initialCode, testCases }: ReactIDEProps) => {
       </div>
 
       {/* Preview / Output Side */}
-      <div className="w-1/2 flex flex-col bg-[#000]">
-        {/* Header Tabs */}
-        <div className="h-11 border-b border-border bg-surface flex items-center px-1 shrink-0 overflow-x-auto scroller-none backdrop-blur-md">
-          {[
-            { id: "preview", label: "Preview", icon: Monitor },
-            { id: "console", label: "Output", icon: Terminal },
-            { id: "tests", label: "Tests", icon: FlaskConical },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2.5 px-5 h-full text-[10px] font-bold uppercase tracking-[0.15em] transition-all relative whitespace-nowrap ${
-                activeTab === tab.id
-                  ? "text-primary"
-                  : "text-muted hover:text-foreground"
-              }`}
+      {showPreview && (
+        <div className="w-1/2 flex flex-col bg-[#000] animate-in slide-in-from-right duration-300">
+          {/* Header Tabs */}
+          <div className="h-11 border-b border-border bg-surface flex items-center px-1 shrink-0 overflow-x-auto scroller-none backdrop-blur-md">
+            {[
+              { id: "preview", label: "Preview", icon: Monitor },
+              { id: "console", label: "Output", icon: Terminal },
+              { id: "tests", label: "Tests", icon: FlaskConical },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex items-center gap-2.5 px-5 h-full text-[10px] font-bold uppercase tracking-[0.15em] transition-all relative whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? "text-primary"
+                    : "text-muted hover:text-foreground"
+                }`}
+              >
+                <tab.icon
+                  className={`w-3.5 h-3.5 transition-transform ${activeTab === tab.id ? "text-primary scale-110" : "text-muted"}`}
+                />
+                {tab.label}
+                {activeTab === tab.id && (
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary rounded-t-full shadow-[0_-4px_12px_rgba(220,38,38,0.5)]" />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Contents */}
+          <div className="flex-1 overflow-hidden relative">
+            <div
+              className={`h-full ${activeTab === "preview" ? "block scale-in" : "hidden"}`}
             >
-              <tab.icon
-                className={`w-3.5 h-3.5 transition-transform ${activeTab === tab.id ? "text-primary scale-110" : "text-muted"}`}
+              <SandpackPreview
+                showOpenInCodeSandbox={false}
+                showRefreshButton={true}
+                className="w-full h-full"
               />
-              {tab.label}
-              {activeTab === tab.id && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary rounded-t-full shadow-[0_-4px_12px_rgba(220,38,38,0.5)]" />
-              )}
-            </button>
-          ))}
-        </div>
+            </div>
 
-        {/* Tab Contents */}
-        <div className="flex-1 overflow-hidden relative">
-          <div
-            className={`h-full ${activeTab === "preview" ? "block scale-in" : "hidden"}`}
-          >
-            <SandpackPreview
-              showOpenInCodeSandbox={false}
-              showRefreshButton={true}
-              className="w-full h-full"
-            />
-          </div>
+            <div
+              className={`h-full ${activeTab === "console" ? "block font-mono" : "hidden"}`}
+            >
+              <SandpackConsole className="h-full sp-console-custom" />
+            </div>
 
-          <div
-            className={`h-full ${activeTab === "console" ? "block font-mono" : "hidden"}`}
-          >
-            <SandpackConsole className="h-full sp-console-custom" />
-          </div>
-
-          <div
-            className={`h-full ${activeTab === "tests" ? "block" : "hidden"}`}
-          >
-            <TestPanel
-              isRunning={isRunning}
-              runState={runState}
-              onRunTests={handleRunTests}
-            />
+            <div
+              className={`h-full ${activeTab === "tests" ? "block" : "hidden"}`}
+            >
+              <TestPanel
+                isRunning={isRunning}
+                runState={runState}
+                onRunTests={handleRunTests}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </SandpackLayout>
   );
 };

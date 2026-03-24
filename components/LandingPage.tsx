@@ -28,11 +28,13 @@ import {
   Shield,
   Database,
   SearchCode,
+  Github,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import LightRays from "./LightRays";
+import XLPALogo from "./XLPALogo";
 
 const machineCodingSamples = [
   {
@@ -235,14 +237,7 @@ export default function LandingPage() {
             scrolled ? "h-12 px-8" : "h-16 px-6 max-w-7xl"
           }`}
         >
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="font-bold text-xl tracking-tight font-playfair">
-              <span className="font-pacifico font-normal lowercase mx-1">
-                x
-              </span>
-              LPA
-            </span>
-          </Link>
+          <XLPALogo href="/" />
 
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted">
             <a
@@ -250,12 +245,6 @@ export default function LandingPage() {
               className="hover:text-foreground transition-colors"
             >
               Modules
-            </a>
-            <a
-              href="#studio"
-              className="hover:text-foreground transition-colors"
-            >
-              The Studio
             </a>
             <a
               href="#curriculum"
@@ -896,39 +885,102 @@ export default function LandingPage() {
             you've encountered in any section. Your insights help fellow
             engineers level up and succeed.
           </p>
-          <Link
-            href={isSignedIn ? "/dashboard" : "/login"}
+          <a
+            href="https://github.com/itsonlyTushar/xLPA"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-12 py-5 rounded-full font-bold text-lg transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(217,182,8,0.3)]"
           >
-            {isLoaded
-              ? isSignedIn
-                ? "Go to Dashboard"
-                : "Start Contributing"
-              : "..."}
+            Start Contributing
             <ArrowRight className="w-5 h-5" />
-          </Link>
+          </a>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-12 px-6 bg-black">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-8 text-sm text-muted/60">
-          <div className="flex items-center gap-3 font-playfair text-foreground font-bold text-lg">
-            <span className="font-pacifico font-normal lowercase mx-1">x</span>
-            LPA
+      <footer className="border-t border-white/5 pt-24 pb-12 px-6 bg-black relative overflow-hidden">
+        {/* Ambient background glow */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[300px] bg-[radial-gradient(circle_at_center,rgba(217,182,8,0.03),transparent_70%)] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-20">
+            {/* Brand Column */}
+            <div className="space-y-6 lg:col-span-2">
+              <XLPALogo href="/" size="lg" />
+              <p className="text-muted/50 text-sm max-w-sm leading-relaxed font-medium">
+                The ultimate preparation studio for elite engineering roles.
+                Master complex patterns through hands-on practice.
+              </p>
+              <div className="pt-4 flex flex-col gap-4">
+                <a
+                  href="https://github.com/itsonlyTushar"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 text-xs font-bold text-muted/40 hover:text-primary transition-colors group/author"
+                >
+                  <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover/author:border-primary/30 transition-all">
+                    <Github className="w-4 h-4" />
+                  </div>
+                  <span>Made and maintained by itsonlyTushar</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Modules Column */}
+            <div className="space-y-6">
+              <h4 className="text-white font-bold text-sm tracking-[0.2em] uppercase">
+                Modules
+              </h4>
+              <ul className="space-y-4">
+                {[
+                  { label: "Machine Coding", href: "#curriculum" },
+                  { label: "DSA", href: "#modules" },
+                  { label: "System Design", href: "#system-design" },
+                ].map((item) => (
+                  <li key={item.label}>
+                    <a
+                      href={item.href}
+                      className="text-muted/50 hover:text-primary text-sm font-medium transition-colors"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Resources Column */}
+            <div className="space-y-6">
+              <h4 className="text-white font-bold text-sm tracking-[0.2em] uppercase">
+                Resources
+              </h4>
+              <ul className="space-y-4">
+                {[
+                  {
+                    label: "GitHub",
+                    href: "https://github.com/itsonlyTushar/xLPA",
+                  },
+                  { label: "Privacy Policy", href: "/privacy" },
+                  { label: "Terms of Use", href: "/terms" },
+                ].map((item) => (
+                  <li key={item.label}>
+                    <a
+                      href={item.href}
+                      target={item.href.startsWith("http") ? "_blank" : "_self"}
+                      rel={
+                        item.href.startsWith("http")
+                          ? "noopener noreferrer"
+                          : ""
+                      }
+                      className="text-muted/50 hover:text-primary text-sm font-medium transition-colors"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div className="flex gap-12">
-            <a href="#" className="hover:text-foreground transition-colors">
-              Documentation
-            </a>
-            <a href="#" className="hover:text-foreground transition-colors">
-              Enterprise
-            </a>
-            <a href="#" className="hover:text-foreground transition-colors">
-              Github
-            </a>
-          </div>
-          <div>&copy; 2024 Engineering Studio Inc.</div>
         </div>
       </footer>
     </div>
