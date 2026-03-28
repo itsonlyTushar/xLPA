@@ -7,15 +7,19 @@ import { Editor } from "@monaco-editor/react";
 interface CodeEditorProps {
   initialCode: string;
   onRun: (code: string) => void;
+  onSubmit?: (code: string) => void;
   onReset: () => void;
   isRunning: boolean;
+  isSubmitting?: boolean;
 }
 
 export default function CodeEditor({
   initialCode,
   onRun,
+  onSubmit,
   onReset,
   isRunning,
+  isSubmitting = false,
 }: CodeEditorProps) {
   const [code, setCode] = useState(initialCode);
 
@@ -66,6 +70,15 @@ export default function CodeEditor({
             <Play className="w-3.5 h-3.5" />
             {isRunning ? "Running..." : "Run (Ctrl+Enter)"}
           </button>
+          {onSubmit && (
+            <button
+              onClick={() => onSubmit(code)}
+              disabled={isSubmitting || isRunning}
+              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 px-4 py-1.5 rounded-lg border border-primary/20 transition-all active:scale-95 shadow-lg shadow-primary/10"
+            >
+              <span>{isSubmitting ? "Submitting..." : "Submit Solution"}</span>
+            </button>
+          )}
         </div>
       </div>
 

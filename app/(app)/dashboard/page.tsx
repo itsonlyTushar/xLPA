@@ -1,5 +1,8 @@
 "use client";
 
+import { useUser, useSession } from "@clerk/nextjs";
+import { useState, useEffect } from "react";
+import { createClerkSupabaseClient, isSupabaseConfigured } from "@/lib/supabase";
 import { chapters } from "@/lib/curriculum/chapters";
 import { mcChapters } from "@/lib/machine-coding/chapters";
 import { getTotalMCProblems } from "@/lib/machine-coding";
@@ -200,25 +203,86 @@ const userChapterStatus: Record<number, "locked" | "active" | "completed"> =
 userChapterStatus[1] = "active";
 
 export default function DashboardPage() {
+  const { user } = useUser();
+  const { session } = useSession();
+
+  const [stats, setStats] = useState({
+    solvedDSA: 0,
+    solvedMC: 0,
+    solvedSD: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    chapterSolved: {} as Record<number, number>,
+    totalStudyTime: 0,
+    accuracy: 0,
+  });
+
+  useEffect(() => {
+    async function fetchStats() {
+      if (!session || !user || !isSupabaseConfigured) return;
+      const supabase = createClerkSupabaseClient(session);
+
+      // Fetch streaks
+      const { data: streakData } = await supabase
+        .from("streaks")
+        .select("current_streak, longest_streak")
+        .eq("user_id", user.id)
+        .single();
+
+      // Fetch progress per chapter
+      const { data: progressData } = await supabase
+        .from("user_progress")
+        .select("chapter_id, problems_solved")
+        .eq("user_id", user.id);
+
+      // Map progress data to chapterSolved record
+      const chapterSolved: Record<number, number> = {};
+      let totalSolvedDSA = 0;
+      progressData?.forEach((p) => {
+        chapterSolved[p.chapter_id] = p.problems_solved;
+        totalSolvedDSA += p.problems_solved;
+      });
+
+      // Fetch total solved across all modules from attempts table
+      // (This is a simplified approach, we could also count unique passed IDs)
+      const { count: totalPassed } = await supabase
+        .from("attempts")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("passed", true);
+
+      setStats({
+        solvedDSA: totalSolvedDSA,
+        solvedMC: 0, // Need to implement MC progress tracking in library/DB
+        solvedSD: 0,
+        currentStreak: streakData?.current_streak || 0,
+        bestStreak: streakData?.longest_streak || 0,
+        chapterSolved,
+        totalStudyTime: 0,
+        accuracy: 0,
+      });
+    }
+
+    fetchStats();
+  }, [session, user]);
+
+  const {
+    solvedDSA,
+    solvedMC,
+    solvedSD,
+    currentStreak,
+    bestStreak,
+    chapterSolved,
+    totalStudyTime,
+    accuracy,
+  } = stats;
+
   const totalDSAProblems = chapters.reduce((s, c) => s + c.problemCount, 0);
   const totalMCProblems = getTotalMCProblems();
   const totalSDTopics = getTotalSDTopics();
   const totalCaseStudies = getTotalCaseStudies();
   const totalAllProblems = totalDSAProblems + totalMCProblems;
-
-  // Simulated user stats — replace with Supabase data
-  const solvedDSA = 0;
-  const solvedMC = 0;
-  const solvedSD = 0;
-  const currentStreak = 0;
-  const bestStreak = 0;
   const totalSolved = solvedDSA + solvedMC + solvedSD;
-
-  // Per-chapter solved counts (placeholder)
-  const chapterSolved: Record<number, number> = {};
-  chapters.forEach((ch) => {
-    chapterSolved[ch.id] = 0;
-  });
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">

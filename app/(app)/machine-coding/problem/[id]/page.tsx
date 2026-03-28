@@ -477,6 +477,8 @@ export default function MCProblemPage({
           <ReactIDE
             initialCode={problem.starterCode}
             testCases={problem.testCases}
+            problemId={problem.id}
+            chapterId={problem.chapterId}
           />
         </div>
       </div>

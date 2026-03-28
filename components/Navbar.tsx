@@ -1,12 +1,31 @@
 "use client";
 
-import { useUser, useClerk } from "@clerk/nextjs";
+import { useUser, useClerk, useSession } from "@clerk/nextjs";
+import { useState, useEffect } from "react";
+import { createClerkSupabaseClient, isSupabaseConfigured } from "@/lib/supabase";
 import Link from "next/link";
 import { LogOut, Flame, User as UserIcon, Menu } from "lucide-react";
 
 export default function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const { user } = useUser();
+  const { session } = useSession();
   const { signOut } = useClerk();
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    async function fetchStreak() {
+      if (!session || !user || !isSupabaseConfigured) return;
+      const supabase = createClerkSupabaseClient(session);
+      const { data } = await supabase
+        .from("streaks")
+        .select("current_streak")
+        .eq("user_id", user.id)
+        .single();
+      
+      if (data) setStreak(data.current_streak);
+    }
+    fetchStreak();
+  }, [session, user]);
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border/40 bg-black/60 backdrop-blur-md shrink-0">
@@ -24,7 +43,7 @@ export default function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
         <div className="flex items-center gap-6">
           <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-muted">
             <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500/20" />
-            <span>0 DAY STREAK</span>
+            <span>{streak} DAY STREAK</span>
           </div>
 
           {user ? (

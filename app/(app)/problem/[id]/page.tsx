@@ -1,6 +1,8 @@
 "use client";
 
 import { use, useState, useCallback, useEffect } from "react";
+import { useSession, useUser } from "@clerk/nextjs";
+import { recordAttempt } from "@/lib/progress";
 import { getProblem, getNextProblem, getPreviousProblem } from "@/lib/curriculum";
 import { chapters } from "@/lib/curriculum/chapters";
 import { useCodeRunner, RunResult } from "@/hooks/useCodeRunner";
@@ -30,14 +32,18 @@ const difficultyConfig = {
 // Internal component to handle runner logic while having access to Sandpack context
 const ProblemContent = ({ problem, nextProblem, prevProblem, chapter, dc, starterCode, testCases }: any) => {
   const { sandpack } = useSandpack();
-  const { updateFile, runSandpack } = sandpack;
-  const { run } = useCodeRunner(); // Fallback/Original runner for compatibility if needed, but we'll try to unify
+  const { updateFile } = sandpack;
+  const { run } = useCodeRunner();
 
   const [result, setResult] = useState<RunResult | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showHints, setShowHints] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
   const [showDescription, setShowDescription] = useState(true);
+  
+  const { session } = useSession();
+  const { user } = useUser();
 
   // Listen for results from Sandpack (if using event-based runner)
   useEffect(() => {
@@ -61,19 +67,44 @@ const ProblemContent = ({ problem, nextProblem, prevProblem, chapter, dc, starte
     async (code: string) => {
       if (!problem) return;
       setIsRunning(true);
-      
-      // Update Sandpack files and trigger run
       updateFile("/solution.js", code);
-      // We trigger the run by updating the active file or using runSandpack
-      // The actual execution is handled by the index.js logic we put in the provider
-      
-      // For now, let's stick to the worker-based runner but improve its output
-      // OR replace it entirely with the Sandpack logic if we can ensure it works without a visible preview
       const res = await run(code, problem.testCases);
       setResult(res);
       setIsRunning(false);
     },
     [run, problem, updateFile]
+  );
+
+  const handleSubmit = useCallback(
+    async (code: string) => {
+      if (!session || !user || !problem) return;
+      
+      if (!result?.allPassed) {
+        alert("Please run your code and ensure all tests pass before submitting.");
+        return;
+      }
+
+      setIsSubmitting(true);
+      try {
+        await recordAttempt(
+          session,
+          user.id,
+          problem.id,
+          problem.chapterId,
+          code,
+          true,
+          showHints,
+          0
+        );
+        alert("Solution submitted! Your streak has been updated.");
+      } catch (err) {
+        console.error("Submission failed:", err);
+        alert("Failed to submit solution. Please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [session, user, problem, result, showHints]
   );
 
   return (
@@ -293,8 +324,10 @@ const ProblemContent = ({ problem, nextProblem, prevProblem, chapter, dc, starte
             <CodeEditor
               initialCode={problem.starterCode}
               onRun={handleRun}
+              onSubmit={handleSubmit}
               onReset={() => setResult(null)}
               isRunning={isRunning}
+              isSubmitting={isSubmitting}
             />
           </div>
 
@@ -338,10 +371,6 @@ export default function ProblemPage({
     "/index.js": {
       code: `
         import * as Solution from "./solution.js";
-        
-        // Console interception logic here if we were using a real Sandpack preview
-        // For algorithm problems, we'll mostly use the worker, but keeping Sandpack context
-        // allows us to eventually unify them or use Sandpack's more robust bundling.
       `,
       hidden: true
     }

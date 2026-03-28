@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   SandpackProvider,
   SandpackLayout,
@@ -11,6 +11,8 @@ import {
   SandpackThemeProp,
 } from "@codesandbox/sandpack-react";
 import { Editor, OnMount } from "@monaco-editor/react";
+import { useSession, useUser } from "@clerk/nextjs";
+import { recordAttempt } from "@/lib/progress";
 import {
   Play,
   RotateCcw,
@@ -25,6 +27,7 @@ import {
   Save,
   Monitor,
   Plus,
+  CheckCircle2,
 } from "lucide-react";
 
 // Premium Custom Theme based on the site's colors
@@ -61,6 +64,8 @@ const dsaTheme: SandpackThemeProp = {
 interface ReactIDEProps {
   initialCode: string;
   testCases: string;
+  problemId?: string;
+  chapterId?: number;
 }
 
 interface TestResult {
@@ -120,9 +125,13 @@ const MonacoEditor = () => {
         <Editor
           height="100%"
           language={
-            activeFile.endsWith(".js") || activeFile.endsWith(".jsx")
+            activeFile.endsWith(".js") ||
+            activeFile.endsWith(".jsx") ||
+            activeFile.endsWith(".tsx")
               ? "javascript"
-              : "css"
+              : activeFile.endsWith(".css")
+                ? "css"
+                : "html"
           }
           value={files[activeFile].code}
           onChange={handleEditorChange}
@@ -263,19 +272,56 @@ const TestPanel = ({
 };
 
 // Internal IDE components that have access to useSandpack
-const IDEInterior = ({ initialCode, testCases }: ReactIDEProps) => {
+const IDEInterior = ({
+  initialCode,
+  testCases,
+  problemId,
+  chapterId,
+}: ReactIDEProps) => {
   const { sandpack } = useSandpack();
-  const { activeFile, addFile } = sandpack;
+  const { activeFile, addFile, files } = sandpack;
+  const { session } = useSession();
+  const { user } = useUser();
 
   const [activeTab, setActiveTab] = useState<"preview" | "console" | "tests">(
     "preview",
   );
   const [isRunning, setIsRunning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [runState, setRunState] = useState<RunState | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showPreview, setShowPreview] = useState(true);
   const [isCreatingFile, setIsCreatingFile] = useState(false);
   const [newFileName, setNewFileName] = useState("");
+
+  const handleSubmit = async () => {
+    if (!session || !user || !problemId || !chapterId) return;
+    if (!runState?.allPassed) {
+      alert("Please verify your code with all tests passing before submitting.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const code = files["/src/App.js"]?.code || "";
+      await recordAttempt(
+        session,
+        user.id,
+        problemId,
+        chapterId,
+        code,
+        true, // passed
+        false, // hint used
+        0, // time takenMs
+      );
+      alert("Solution submitted successfully! Streak updated.");
+    } catch (err) {
+      console.error("Submission failed:", err);
+      alert("Failed to submit solution. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Listen for test results from sandpack preview
   useEffect(() => {
@@ -316,7 +362,7 @@ const IDEInterior = ({ initialCode, testCases }: ReactIDEProps) => {
       setNewFileName("");
       setIsCreatingFile(false);
     } catch (err) {
-      alert("Error adding file. Make sure it has a valid extension.");
+      // Re-throw or handle as before
     }
   };
 
@@ -405,6 +451,16 @@ const IDEInterior = ({ initialCode, testCases }: ReactIDEProps) => {
               <FlaskConical className="w-3.5 h-3.5 group-hover/btn:rotate-12 transition-transform" />
               <span>Verify Code</span>
             </button>
+            {runState?.allPassed && (
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.1em] bg-success/10 text-success hover:bg-success/20 px-4 py-2 rounded-xl border border-success/20 transition-all active:scale-95 shadow-[0_4px_15px_rgba(34,197,94,0.15)] group/submit"
+              >
+                <CheckCircle2 className={`w-3.5 h-3.5 ${isSubmitting ? "animate-pulse" : ""}`} />
+                <span>{isSubmitting ? "Submitting..." : "Submit Solution"}</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -496,11 +552,16 @@ const ensureEnvironment = (code: string) => {
   return finalCode;
 };
 
-export default function ReactIDE({ initialCode, testCases }: ReactIDEProps) {
+export default function ReactIDE({
+  initialCode,
+  testCases,
+  problemId,
+  chapterId,
+}: ReactIDEProps) {
   // Final file list
   const files: Record<string, any> = {
-    "/solution.jsx": ensureEnvironment(initialCode),
-    "/index.js": {
+    "/src/App.js": ensureEnvironment(initialCode),
+    "/src/index.js": {
       code: `
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -526,17 +587,23 @@ console.assert = (cond, msg) => {
   if (!cond) window.__logs.push({ type: 'error', message: 'Assertion failed: ' + (msg || '') });
 };
 
-// Import the user's solution
-import * as Solution from "./solution.jsx";
+// Import the user's code
+import * as UserCode from "./App.js";
 
 // Standard entry point rendering
 const rootElement = document.getElementById("root");
 if (rootElement) {
-  // If it exports a component, we render it
-  const App = Solution.default || Solution.App || Solution.Modal || Solution.Component;
-  if (App && rootElement.innerHTML === "") {
-    const root = ReactDOM.createRoot(rootElement);
-    root.render(React.createElement(App));
+  // If no internal content was added by the user's code (e.g. they didn't call render themselves)
+  if (rootElement.innerHTML === "") {
+    // Try to find an exported component
+    const Component = UserCode.default || UserCode.App || UserCode.Modal || UserCode.Component;
+    
+    // CRITICAL FIX: Only render if we found a valid component type (function or string)
+    // Avoids "Element type is invalid: expected a string... but got: object" when no export is found (UserCode is {})
+    if (Component && (typeof Component === 'function' || typeof Component === 'string')) {
+      const root = ReactDOM.createRoot(rootElement);
+      root.render(React.createElement(Component));
+    }
   }
 }
 
@@ -563,17 +630,41 @@ if (isRunning) {
       `,
       hidden: true,
     },
-    "/styles.css": {
+    "/src/styles.css": {
       code: `
 body {
   margin: 0;
-  padding: 0;
+  padding: 16px;
   background-color: #000;
   color: #ededed;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 * { box-sizing: border-box; }
       `,
+      hidden: false,
+    },
+    "/public/index.html": {
+      code: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>React Preview</title>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>`,
+      hidden: true,
+    },
+    "/package.json": {
+      code: JSON.stringify({
+        main: "/src/index.js",
+        dependencies: {
+          react: "18.2.0",
+          "react-dom": "18.2.0",
+          "lucide-react": "latest",
+        },
+      }),
       hidden: true,
     },
   };
@@ -584,19 +675,18 @@ body {
         template="react"
         theme={dsaTheme}
         files={files}
-        customSetup={{
-          dependencies: {
-            react: "18.2.0",
-            "react-dom": "18.2.0",
-            "lucide-react": "latest",
-          },
-        }}
         options={{
+          activeFile: "/src/App.js",
           recompileMode: "delayed",
           recompileDelay: 800,
         }}
       >
-        <IDEInterior initialCode={initialCode} testCases={testCases} />
+        <IDEInterior 
+          initialCode={initialCode} 
+          testCases={testCases} 
+          problemId={problemId} 
+          chapterId={chapterId}
+        />
       </SandpackProvider>
 
       <style jsx global>{`

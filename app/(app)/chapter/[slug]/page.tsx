@@ -1,10 +1,12 @@
 "use client";
 
-import { use } from "react";
+import { useSession, useUser } from "@clerk/nextjs";
+import { use, useState, useEffect } from "react";
+import { createClerkSupabaseClient, isSupabaseConfigured } from "@/lib/supabase";
 import { chapters } from "@/lib/curriculum/chapters";
 import { getProblemsForChapter } from "@/lib/curriculum";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, Lightbulb, Code2 } from "lucide-react";
+import { ArrowLeft, BookOpen, Lightbulb, Code2, CheckCircle2 } from "lucide-react";
 
 const difficultyConfig = {
   warmup: { label: "Warmup", class: "badge-warmup" },
@@ -19,7 +21,27 @@ export default function ChapterPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
+  const { user } = useUser();
+  const { session } = useSession();
+  const [passedProblemIds, setPassedProblemIds] = useState<Set<string>>(new Set());
   const chapter = chapters.find((c) => c.slug === slug);
+
+  useEffect(() => {
+    async function fetchProgress() {
+      if (!session || !user || !isSupabaseConfigured) return;
+      const supabase = createClerkSupabaseClient(session);
+      const { data } = await supabase
+        .from("attempts")
+        .select("problem_id")
+        .eq("user_id", user.id)
+        .eq("passed", true);
+      
+      if (data) {
+        setPassedProblemIds(new Set(data.map(a => a.problem_id)));
+      }
+    }
+    fetchProgress();
+  }, [session, user]);
 
   if (!chapter) {
     return (
@@ -155,8 +177,15 @@ export default function ChapterPage({
                       ))}
                     </div>
                   </div>
-                  <div className="text-xs text-muted shrink-0">
-                    Not attempted
+                  <div className={`text-xs flex items-center gap-1.5 shrink-0 transition-colors ${passedProblemIds.has(problem.id) ? "text-success font-bold" : "text-muted"}`}>
+                    {passedProblemIds.has(problem.id) ? (
+                      <>
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        Solved
+                      </>
+                    ) : (
+                      "Not attempted"
+                    )}
                   </div>
                 </Link>
               );
